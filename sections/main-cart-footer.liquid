@@ -3,7 +3,303 @@
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
 
-<div class="page-width{% if cart == empty %} is-empty{% endif %}" id="main-cart-footer" data-id="{{ section.id }}">
+{%- style -%}
+  /* ============================================================
+     MOTH — CART FOOTER
+     Nocturnal luxury · Antique gold checkout · Parchment totals
+     ============================================================ */
+
+  .moth-cart-footer {
+    --moth-void:      #0a0806;
+    --moth-deep:      #110e0a;
+    --moth-charcoal:  #1c1814;
+    --moth-ash:       #2e2922;
+    --moth-smoke:     #4a433a;
+    --moth-vellum:    #e8dece;
+    --moth-cream:     #f5efe4;
+    --moth-dust:      #9a9080;
+    --moth-gold:      #b8955a;
+    --moth-gold-pale: #d4b07a;
+    --moth-wing:      #3d2e1e;
+
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body:    'Jost', 'Helvetica Neue', sans-serif;
+
+    --ease-silk:   cubic-bezier(0.25, 0.1, 0.25, 1);
+    --ease-emerge: cubic-bezier(0.16, 1, 0.3, 1);
+    --t-mid: 300ms;
+    --t-slow: 600ms;
+  }
+
+  /* ── Footer wrapper ── */
+  .moth-cart-footer .cart__footer {
+    background-color: var(--moth-charcoal);
+    border-top: 1px solid var(--moth-ash);
+    padding: 3.2rem 0 0;
+    position: relative;
+  }
+
+  /* Gold corner accent — top-left of footer */
+  .moth-cart-footer .cart__footer::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-top: 1px solid var(--moth-gold);
+    border-left: 1px solid var(--moth-gold);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* ── Cart note ── */
+  .moth-cart-footer .cart__note {
+    border-top: 1px solid var(--moth-ash);
+    padding-top: 2.4rem;
+    margin-bottom: 3.2rem;
+  }
+  .moth-cart-footer .cart__note label {
+    font-family: var(--font-body) !important;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--moth-dust) !important;
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .moth-cart-footer .cart__note .text-area {
+    font-family: var(--font-body) !important;
+    font-size: 1.3rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: var(--moth-vellum) !important;
+    background-color: var(--moth-deep) !important;
+    border: 1px solid var(--moth-ash) !important;
+    resize: vertical;
+    transition: border-color var(--t-mid) var(--ease-silk);
+    line-height: 1.7;
+  }
+  .moth-cart-footer .cart__note .text-area::placeholder {
+    color: var(--moth-smoke);
+    letter-spacing: 0.08em;
+  }
+  .moth-cart-footer .cart__note .text-area:focus {
+    border-color: var(--moth-gold) !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(184, 149, 90, 0.1);
+  }
+
+  /* ── Totals block ── */
+  .moth-cart-footer .totals {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 2.4rem 0;
+    border-top: 1px solid var(--moth-ash);
+  }
+  .moth-cart-footer .totals__subtotal {
+    font-family: var(--font-body) !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.24em !important;
+    text-transform: uppercase !important;
+    color: var(--moth-dust) !important;
+    margin: 0 !important;
+  }
+  .moth-cart-footer .totals__subtotal-value {
+    font-family: var(--font-display) !important;
+    font-size: 2.8rem !important;
+    font-weight: 300 !important;
+    letter-spacing: 0.06em !important;
+    color: var(--moth-cream) !important;
+    margin: 0 !important;
+  }
+
+  /* ── Discount codes ── */
+  .moth-cart-footer .discounts {
+    padding: 0 0 1.6rem;
+  }
+  .moth-cart-footer .discounts__discount {
+    font-family: var(--font-body) !important;
+    font-size: 1.1rem !important;
+    font-weight: 300 !important;
+    letter-spacing: 0.12em !important;
+    color: var(--moth-gold) !important;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .moth-cart-footer .discounts__discount svg {
+    color: var(--moth-gold);
+    opacity: 0.8;
+  }
+
+  /* ── Tax / shipping note ── */
+  .moth-cart-footer .tax-note {
+    font-family: var(--font-body) !important;
+    font-size: 1.1rem !important;
+    font-weight: 300 !important;
+    letter-spacing: 0.06em !important;
+    color: var(--moth-smoke) !important;
+    display: block;
+    padding-bottom: 2.4rem;
+    line-height: 1.7;
+  }
+  .moth-cart-footer .tax-note a {
+    color: var(--moth-dust);
+    border-bottom: 1px solid var(--moth-ash);
+    transition: color var(--t-mid), border-color var(--t-mid);
+  }
+  .moth-cart-footer .tax-note a:hover {
+    color: var(--moth-gold);
+    border-color: var(--moth-gold);
+  }
+
+  /* ── Checkout button ── */
+  .moth-cart-footer .cart__checkout-button {
+    font-family: var(--font-body) !important;
+    font-weight: 400 !important;
+    font-size: 1.1rem !important;
+    letter-spacing: 0.28em !important;
+    text-transform: uppercase !important;
+    background-color: var(--moth-gold) !important;
+    color: var(--moth-void) !important;
+    border: 1px solid var(--moth-gold) !important;
+    padding: 2rem 4rem !important;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    transition:
+      background-color var(--t-mid) var(--ease-silk),
+      border-color var(--t-mid) var(--ease-silk),
+      box-shadow var(--t-mid) var(--ease-silk),
+      transform 150ms var(--ease-silk) !important;
+  }
+  /* Shimmer sweep */
+  .moth-cart-footer .cart__checkout-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.12) 50%,
+      transparent 80%
+    );
+    transition: left 0.7s var(--ease-emerge);
+    pointer-events: none;
+  }
+  .moth-cart-footer .cart__checkout-button:hover::after {
+    left: 160%;
+  }
+  .moth-cart-footer .cart__checkout-button:hover {
+    background-color: var(--moth-gold-pale) !important;
+    border-color: var(--moth-gold-pale) !important;
+    box-shadow: 0 4px 28px rgba(184, 149, 90, 0.22) !important;
+    transform: translateY(-1px);
+  }
+  .moth-cart-footer .cart__checkout-button:active {
+    transform: translateY(0) !important;
+  }
+  .moth-cart-footer .cart__checkout-button[disabled] {
+    background-color: var(--moth-ash) !important;
+    border-color: var(--moth-ash) !important;
+    color: var(--moth-smoke) !important;
+    cursor: not-allowed;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+  .moth-cart-footer .cart__checkout-button[disabled]::after {
+    display: none;
+  }
+
+  /* ── Update button (noscript) ── */
+  .moth-cart-footer .cart__update-button {
+    font-family: var(--font-body) !important;
+    font-size: 1.1rem !important;
+    font-weight: 300 !important;
+    letter-spacing: 0.2em !important;
+    text-transform: uppercase !important;
+    background-color: transparent !important;
+    color: var(--moth-vellum) !important;
+    border: 1px solid var(--moth-ash) !important;
+    width: 100%;
+    margin-bottom: 1.2rem;
+    transition: border-color var(--t-mid), color var(--t-mid);
+  }
+  .moth-cart-footer .cart__update-button:hover {
+    border-color: var(--moth-smoke) !important;
+    color: var(--moth-cream) !important;
+  }
+
+  /* ── Dynamic checkout buttons ── */
+  .moth-cart-footer .cart__dynamic-checkout-buttons {
+    margin-top: 1.2rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--moth-ash);
+  }
+  .moth-cart-footer .cart__dynamic-checkout-buttons .shopify-payment-button__button--unbranded {
+    background-color: transparent !important;
+    color: var(--moth-vellum) !important;
+    border: 1px solid var(--moth-ash) !important;
+    font-family: var(--font-body) !important;
+    font-size: 1.1rem !important;
+    letter-spacing: 0.2em !important;
+    text-transform: uppercase !important;
+    font-weight: 300 !important;
+    transition:
+      border-color var(--t-mid) var(--ease-silk),
+      color var(--t-mid) var(--ease-silk) !important;
+  }
+  .moth-cart-footer .cart__dynamic-checkout-buttons .shopify-payment-button__button--unbranded:hover {
+    border-color: var(--moth-gold) !important;
+    color: var(--moth-gold) !important;
+  }
+
+  /* ── Cart CTAs wrapper ── */
+  .moth-cart-footer .cart__ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  /* ── Error messages ── */
+  .moth-cart-footer #cart-errors {
+    font-family: var(--font-body) !important;
+    font-size: 1.2rem !important;
+    font-weight: 300 !important;
+    letter-spacing: 0.08em !important;
+    color: var(--moth-gold-pale) !important;
+    padding: 1.2rem 0;
+  }
+
+  /* ── Entry animation ── */
+  @keyframes moth-cart-footer-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .moth-cart-footer .cart__footer {
+    animation: moth-cart-footer-rise 0.7s var(--ease-emerge) both;
+  }
+
+  /* ── Reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    .moth-cart-footer *,
+    .moth-cart-footer *::before,
+    .moth-cart-footer *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+{%- endstyle -%}
+
+<div class="moth-cart-footer page-width{% if cart == empty %} is-empty{% endif %}" id="main-cart-footer" data-id="{{ section.id }}">
   <div>
     <div class="cart__footer">
       {%- if settings.show_cart_note -%}
@@ -70,9 +366,7 @@
                   id="checkout"
                   class="cart__checkout-button button"
                   name="checkout"
-                  {% if cart == empty %}
-                    disabled
-                  {% endif %}
+                  {% if cart == empty %}disabled{% endif %}
                   form="cart"
                 >
                   {{ 'sections.cart.checkout' | t }}
@@ -99,16 +393,14 @@
       const ua = window.navigator.userAgent;
       const msie = ua.indexOf('MSIE ');
       const trident = ua.indexOf('Trident/');
-
       return msie > 0 || trident > 0;
     }
-
     if (!isIE()) return;
     const cartSubmitInput = document.createElement('input');
     cartSubmitInput.setAttribute('name', 'checkout');
     cartSubmitInput.setAttribute('type', 'hidden');
     document.querySelector('#cart').appendChild(cartSubmitInput);
-    document.querySelector('#checkout').addEventListener('click', function (event) {
+    document.querySelector('#checkout').addEventListener('click', function () {
       document.querySelector('#cart').submit();
     });
   });
